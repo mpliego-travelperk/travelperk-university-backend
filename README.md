@@ -29,7 +29,17 @@ docker-compose run backend
 
 ## Development (without docker)
 
-In the _"/src"_ directory run for each case:
+In the _"/src"_ directory run for each case.
+
+It is highly recommended to run the application inside a 
+virtual environment some IDE helps in the creation and use
+but in case it not available run the following commands to
+create and run the venv:
+
+```shell
+python3 -m venv --clear .venv
+source .venv/bin/activate
+```
 
 ### Run Tests
 

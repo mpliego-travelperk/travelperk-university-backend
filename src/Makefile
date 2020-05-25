@@ -3,6 +3,12 @@ APP_PORT ?= 8000
 .DEFAULT_GOAL := help
 .PHONY: help
 
+dep: ## Runs linting test to the code.
+	pip3 install -r requirements.txt
+
+lint: ## Runs linting test to the code.
+	flake8 .
+
 test: ## Runs project tests.
 	python3 manage.py test
 
