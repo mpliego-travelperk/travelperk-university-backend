@@ -20,6 +20,7 @@ class ModelTests(TestCase):
         self.assertEqual(str(recipe), recipe.name)
 
     def test_same_name_different_ingredient(self):
+        """Test the ingredients of the same name are allow to be created"""
         ingredient = models.Ingredient(name="Tomato")
         ingredient.save()
 
