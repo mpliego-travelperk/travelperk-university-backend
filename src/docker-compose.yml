@@ -1,0 +1,11 @@
+version: "2"
+services:
+    backend:
+      build: .
+      environment:
+        - DB_PATH=/data/db.sqlite3
+      command: run
+      ports:
+        - "8000:8000"
+      volumes:
+        - ./.data:/data

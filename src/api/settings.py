@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-DB_PATH = os.path.join(BASE_DIR, 'db.sqlite3')
+DB_PATH = os.getenv('DB_PATH', os.path.join(BASE_DIR, 'db.sqlite3'))
 
 DATABASES = {
     'default': {

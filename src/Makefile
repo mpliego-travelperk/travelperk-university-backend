@@ -9,14 +9,17 @@ test: ## Runs project tests.
 run: ## Starts django server and listen to port `{APP_PORT}` or `8000`.
 	python3 manage.py runserver 0.0.0.0:$(APP_PORT)
 
-build-migrations: ## Builds db migrations.
-	python3 manage.py makemigrations
-
-migrate: ## Runs db migrations to the database.
+run-migrate: ## Runs db migrations to the database.
 	python3 manage.py migrate
+
+migration: ## Builds db migrations.
+	python3 manage.py makemigrations
 
 docker: ## Builds the docker image with tag `{DOCKER_IMAGE_NAME}` or `travelperk-university-backend`
 	docker build -t $(DOCKER_IMAGE_NAME) .
+
+sh: ## Starts sh session(for docker debugging).
+	@sh
 
 # Godly script by: https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## Prints this page.
