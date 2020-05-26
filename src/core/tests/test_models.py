@@ -21,10 +21,17 @@ class ModelTests(TestCase):
 
     def test_same_name_different_ingredient(self):
         """Test the ingredients of the same name are allow to be created"""
+        recipe = models.Recipe.objects.create(
+            name="Tomato Soup"
+        )
+        recipe.save()
+
         ingredient = models.Ingredient(name="Tomato")
+        ingredient.recipe = recipe
         ingredient.save()
 
         ingredient2 = models.Ingredient(name="Tomato")
+        ingredient2.recipe = recipe
         ingredient2.save()
 
         self.assertNotEqual(ingredient.id, ingredient2.id)
