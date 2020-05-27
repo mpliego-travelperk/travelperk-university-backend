@@ -4,20 +4,72 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core import models
-from core.models import Recipe
-from recipe.serializers import RecipeSerializer
+from core.models import Recipe, Ingredient
+from recipe.serializers import RecipeSerializer, IngredientSerializer
 
 RECIPE_URL = reverse('recipe:recipe-list')
+INGREDIENT_URL = reverse('recipe:ingredient-list')
+
+
+def ingredient_detail_url(ingredient_id):
+    """Return ingredient URL"""
+    return reverse('recipe:ingredient-detail', args=[ingredient_id])
 
 
 def add_ingredient_url(recipe_id):
-    """Return recipe detail URL"""
+    """Return recipe add ingredient URL"""
     return reverse('recipe:recipe-add-ingredient', args=[recipe_id])
 
 
-def remove_ingredient_url(ingredient_id):
-    """Return recipe detail URL"""
-    return reverse('recipe:recipe-remove-ingredient', args=[ingredient_id])
+def sample_recipe(name='Recipe Read',
+                  description='Recipe Read Description'):
+    """Creates and persists a sample Recipe"""
+    recipe = models.Recipe.objects.create(
+        name=name,
+        description=description
+    )
+    recipe.save()
+    return recipe
+
+
+class IngredientViewTests(TestCase):
+    """Ingredient REST API Tests"""
+
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_read_ingredient(self):
+        """Test read of a ingredient"""
+        recipe = sample_recipe()
+        ingredient = Ingredient.objects.create(
+            name="Ingredient", recipe=recipe)
+        res = self.client.get(INGREDIENT_URL)
+        serializer = IngredientSerializer([ingredient], many=True)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_remove_ingredient(self):
+        """Test remove an ingredient"""
+        recipe = sample_recipe()
+        ingredient = Ingredient.objects.create(
+            name='Ingredient', recipe=recipe)
+        ingredient.save()
+        res = self.client.delete(ingredient_detail_url(ingredient.id))
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_update_ingredient(self):
+        """Test update of an ingredient"""
+        recipe = sample_recipe()
+        ingredient = Ingredient.objects.create(
+            name='Ingredient', recipe=recipe)
+        ingredient.save()
+        ingredient.name = 'Ingredient 2'
+        res = self.client.put(
+            ingredient_detail_url(ingredient.id),
+            {'name': ingredient.name})
+        serializer = IngredientSerializer(ingredient)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
 
 
 class RecipeViewTests(TestCase):
@@ -28,11 +80,7 @@ class RecipeViewTests(TestCase):
 
     def test_read_recipe(self):
         """Test read of a recipe"""
-        recipe = models.Recipe.objects.create(
-            name='Recipe Read',
-            description='Recipe Read Description'
-        )
-        recipe.save()
+        recipe = sample_recipe()
         res = self.client.get(RECIPE_URL)
         serializer = RecipeSerializer([recipe], many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -53,11 +101,7 @@ class RecipeViewTests(TestCase):
 
     def test_add_ingredients(self):
         """Test creating recipe with ingredients"""
-        recipe = models.Recipe.objects.create(
-            name='Recipe Read',
-            description='Recipe Read Description'
-        )
-        recipe.save()
+        recipe = sample_recipe()
         res = self.client.post(
             add_ingredient_url(recipe.id), {'name': 'Ingredient 1'})
         self.assertEqual(res.status_code, status.HTTP_200_OK)

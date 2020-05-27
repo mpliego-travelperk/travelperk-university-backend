@@ -2,8 +2,14 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from core.models import Recipe
+from core.models import Recipe, Ingredient
 from recipe import serializers
+
+
+class IngredientViewSet(viewsets.ModelViewSet):
+    """Manage ingredients in the database"""
+    serializer_class = serializers.IngredientSerializer
+    queryset = Ingredient.objects.all()
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
