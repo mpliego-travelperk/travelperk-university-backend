@@ -12,6 +12,8 @@ lint: ## Runs linting test to the code.
 test: ## Runs project tests.
 	python3 manage.py test
 
+validate: lint test ## Run linting and unit tests.
+
 run: ## Starts django server and listen to port `{APP_PORT}` or `8000`.
 	python3 manage.py runserver 0.0.0.0:$(APP_PORT)
 
@@ -23,6 +25,13 @@ migration: ## Builds db migrations.
 
 docker: ## Builds the docker image with tag `{DOCKER_IMAGE_NAME}` or `travelperk-university-backend`
 	docker build -t $(DOCKER_IMAGE_NAME) .
+
+docker-test: docker ## Builds docker image (see docker target) and run tests.
+	docker run -t $(DOCKER_IMAGE_NAME) validate
+
+docker-push: ## Tags and pushes with the required name:tag `{DOCKER_REMOTE_IMAGE}`.
+	docker tag $(DOCKER_IMAGE_NAME) $(DOCKER_REMOTE_IMAGE)
+	docker push $(DOCKER_REMOTE_IMAGE)
 
 sh: ## Starts sh session(for docker debugging).
 	@sh
