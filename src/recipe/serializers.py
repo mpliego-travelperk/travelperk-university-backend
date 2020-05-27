@@ -13,6 +13,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Serialize a recipe"""
+    ingredients = IngredientSerializer(many=True, read_only=True)
 
     class Meta:
         model = Recipe
