@@ -1,24 +1,23 @@
 on:
   push:
     branches:
-      "*"
-
-name: Test
+      "master"
+name: Build
 jobs:
   test:
-    name: Test
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code into the Go module directory
+      - name: Check Out Code
         uses: actions/checkout@v2
       - uses: azure/docker-login@v1
         with:
-          login-server: 'docker.pkg.github.com' # default: index.docker.io
+          login-server: 'docker.pkg.github.com'
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
         run: cd ./src && make docker
-      - name: Build Docker Image
+      - name: Push Docker Image (latest)
         run: cd ./src && make docker-push
         env:
           DOCKER_REMOTE_IMAGE: 'docker.pkg.github.com/mpliego/travelperk-university-backend/backend:latest'
