@@ -29,6 +29,10 @@ docker: ## Builds the docker image with tag `{DOCKER_IMAGE_NAME}` or `travelperk
 docker-test: docker ## Builds docker image (see docker target) and run tests.
 	docker run -t $(DOCKER_IMAGE_NAME) validate
 
+docker-push: ## Tags and pushes with the required name:tag `{DOCKER_REMOTE_IMAGE}`.
+	docker tag $(DOCKER_IMAGE_NAME) $(DOCKER_REMOTE_IMAGE)
+	docker push $(DOCKER_REMOTE_IMAGE)
+
 sh: ## Starts sh session(for docker debugging).
 	@sh
 
