@@ -1,12 +1,17 @@
-from rest_framework import viewsets, status
+from django.db import IntegrityError
+from rest_framework import viewsets, status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from core.models import Recipe, Ingredient
 from recipe import serializers
 
 
-class IngredientViewSet(viewsets.ModelViewSet):
+class IngredientViewSet(mixins.RetrieveModelMixin,
+                        mixins.DestroyModelMixin,
+                        mixins.ListModelMixin,
+                        GenericViewSet):
     """Manage ingredients in the database"""
     serializer_class = serializers.IngredientSerializer
     queryset = Ingredient.objects.all()
@@ -31,11 +36,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
             data=request.data
         )
         if serializer.is_valid():
-            serializer.save(recipe=recipe)
-            return Response(
-                serializer.data,
-                status=status.HTTP_200_OK
-            )
+            try:
+                serializer.save(recipe=recipe)
+                return Response(
+                    serializer.data,
+                    status=status.HTTP_200_OK
+                )
+            except IntegrityError:
+                return Response(
+                    status=status.HTTP_409_CONFLICT
+                )
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST

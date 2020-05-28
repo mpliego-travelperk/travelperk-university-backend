@@ -57,20 +57,6 @@ class IngredientViewTests(TestCase):
         res = self.client.delete(ingredient_detail_url(ingredient.id))
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_update_ingredient(self):
-        """Test update of an ingredient"""
-        recipe = sample_recipe()
-        ingredient = Ingredient.objects.create(
-            name='Ingredient', recipe=recipe)
-        ingredient.save()
-        ingredient.name = 'Ingredient 2'
-        res = self.client.put(
-            ingredient_detail_url(ingredient.id),
-            {'name': ingredient.name})
-        serializer = IngredientSerializer(ingredient)
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
-
 
 class RecipeViewTests(TestCase):
     """Recipe REST API Tests"""

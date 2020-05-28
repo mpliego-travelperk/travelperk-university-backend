@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.test import TestCase
 
 from core import models
@@ -45,6 +46,8 @@ class ModelTests(TestCase):
 
         ingredient2 = models.Ingredient(name='Tomato')
         ingredient2.recipe = recipe
-        ingredient2.save()
-
-        self.assertEqual(ingredient.id, ingredient2.id)
+        try:
+            ingredient2.save()
+            self.fail("unique_together condition is not being met.")
+        except IntegrityError:
+            pass

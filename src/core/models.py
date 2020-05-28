@@ -19,16 +19,10 @@ class Ingredient(models.Model):
         Recipe,
         related_name='ingredients',
         on_delete=models.CASCADE)
-
-    def save(self, *args, **kwargs):
-        """Overrides save prohibiting saving the same ingredient per recipe"""
-        if self.id is None:
-            results = Ingredient.objects.filter(
-                name=self.name, recipe=self.recipe)
-            if len(results) > 0:
-                self.id = results[0].id
-                return
-        super().save(*args, **kwargs)
+    unique_together = ['name', 'recipe']
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ['name', 'recipe']
