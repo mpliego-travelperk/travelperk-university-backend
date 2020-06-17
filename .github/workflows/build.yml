@@ -20,4 +20,4 @@ jobs:
       - name: Push Docker Image (latest)
         run: cd ./src && make docker-push
         env:
-          DOCKER_REMOTE_IMAGE: 'docker.pkg.github.com/mpliego/travelperk-university-backend/backend:latest'
+          DOCKER_REMOTE_IMAGE: 'docker.pkg.github.com/mpliego-travelperk/travelperk-university-backend/backend:latest'
